@@ -231,6 +231,11 @@ class _NewAppBarState extends State<NewAppBar> {
 }
 
 class LoginCard extends StatelessWidget {
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final FirebaseAuthService _auth = FirebaseAuthService();
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -243,17 +248,17 @@ class LoginCard extends StatelessWidget {
             children: <Widget>[
               TextField(
                 decoration: InputDecoration(labelText: 'Email'),
+                controller: _emailController,
               ),
               SizedBox(height: 10),
               TextField(
                 decoration: InputDecoration(labelText: 'Password'),
+                controller: _passwordController,
                 obscureText: true,
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  // Handle login logic here
-                },
+                onPressed: _signIn,
                 child: Text('Login'),
               ),
               SizedBox(height: 10),
@@ -269,12 +274,26 @@ class LoginCard extends StatelessWidget {
       ),
     );
   }
+
+  void _signIn() async{
+    String email = _emailController.text; 
+    String password = _passwordController.text;
+
+    User? user = await _auth.signInWithEmailAndPassword(email, password);
+
+    if(user != null){
+      print("User succesfully logged");
+    }else{
+      print("Some error happened");
+    }
+  }
+
 }
 
 class SignupCard extends StatelessWidget {
 
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuthService _auth = FirebaseAuthService();
 
   @override
