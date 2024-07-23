@@ -1,63 +1,92 @@
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 import '../widgets/new_app_bar.dart';
 import '../controllers/data_service.dart';
 import '../models/table_status.dart';
+import '../widgets/rastreio_widget.dart';
 
-class FastTrack extends StatefulWidget {
-  @override
-  State<FastTrack> createState() => _FastTrackState();
-}
-
-class _FastTrackState extends State<FastTrack> {
-  final TextEditingController _codeController = TextEditingController();
+class FastTrack extends StatelessWidget {
+  final TextEditingController _codigoController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: NewAppBar(nometela: 'Fast Track'),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _codeController,
-              decoration: InputDecoration(
-                labelText: 'Enter tracking code',
-                border: OutlineInputBorder(),
+      appBar: NewAppBar(nometela: "Rastreio Rápido"),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  controller: _codigoController,
+                  decoration: InputDecoration(labelText: 'Código de Rastreio'),
+                ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    dataService.carregar(0, _codigoController.text);
+                  },
+                  child: Text("Procurar"),
+                ),
+              ),
+              SingleChildScrollView(
+                child: ValueListenableBuilder(
+                  valueListenable: dataService.tableStateNotifier,
+                  builder: (_, value, __) {
+                    if (value == null || value['status'] == null) {
+                      return Text("Nenhum dado disponível.");
+                    }
+
+                    switch (value['status']) {
+                      case TableStatus.idle:
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: FadeInImage.memoryNetwork(
+                                placeholder: kTransparentImage,
+                                image: 'https://i.imgur.com/zVkjVgc.png',
+                                height: 300.0,
+                                width: 300.0,
+                              ),
+                            ),
+                            Text("Coloque um código para rastreio..."),
+                          ],
+                        );
+                      case TableStatus.loading:
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      case TableStatus.error:
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("Ocorreu um erro ao carregar os dados."),
+                              ElevatedButton(
+                                onPressed: () {
+                                  dataService.carregar(
+                                      0, _codigoController.text);
+                                },
+                                child: Text("Tentar Novamente"),
+                              ),
+                            ],
+                          ),
+                        );
+                      case TableStatus.ready:
+                        return RastreioWidget(data: value['dataObjects']);
+                      default:
+                        return Text("Estado desconhecido.");
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              dataService.carregar(0, _codeController.text);
-            },
-            child: Text('Track'),
-          ),
-          ValueListenableBuilder(
-            valueListenable: dataService.tableStateNotifier,
-            builder: (context, value, child) {
-              if (value['status'] == TableStatus.loading) {
-                return CircularProgressIndicator();
-              } else if (value['status'] == TableStatus.ready) {
-                return Expanded(
-                  child: ListView.builder(
-                    itemCount: value['dataObjects'].length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(value['dataObjects'][index]['status']),
-                        subtitle: Text(value['dataObjects'][index]['data']),
-                      );
-                    },
-                  ),
-                );
-              } else if (value['status'] == TableStatus.error) {
-                return Text('Error loading tracking information');
-              } else {
-                return Container();
-              }
-            },
-          ),
-        ],
+        ),
       ),
     );
   }
