@@ -41,19 +41,18 @@ Future<void> deleteTrackingCodeByCode(String trackingCode) async {
     User? user = FirebaseAuth.instance.currentUser;
 
   try {
-    // Referência à coleção de códigos de rastreio do usuário
     CollectionReference trackingCodesRef = FirebaseFirestore.instance
         .collection('users')
         .doc(user?.uid)
         .collection('tracking_codes');
 
-    // Consultar o documento que possui o código de rastreio específico
+  
     QuerySnapshot querySnapshot = await trackingCodesRef
         .where('code', isEqualTo: trackingCode)
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
-      // Assumindo que o código de rastreio é único, pegue o primeiro documento encontrado
+    
       DocumentSnapshot docSnapshot = querySnapshot.docs.first;
       await docSnapshot.reference.delete();
       print('Documento deletado com sucesso.');
