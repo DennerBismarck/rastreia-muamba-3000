@@ -4,14 +4,15 @@ import '../widgets/new_app_bar.dart';
 import '../controllers/data_service.dart';
 import '../models/table_status.dart';
 import '../widgets/rastreio_widget.dart';
+import '../controllers/user_track_data.dart';
 
-class FastTrack extends StatelessWidget {
+class NewTrack extends StatelessWidget {
   final TextEditingController _codigoController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: NewAppBar(nometela: "Rastreio"),
+      appBar: NewAppBar(nometela: "Novo Rastreio"),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -36,7 +37,7 @@ class FastTrack extends StatelessWidget {
                 child: ValueListenableBuilder(
                   valueListenable: dataService.tableStateNotifier,
                   builder: (_, value, __) {
-                    if (value == null || value['status'] == null) {
+                    if (value['status'] == null) {
                       return Text("Nenhum dado disponível.");
                     }
 
@@ -76,8 +77,21 @@ class FastTrack extends StatelessWidget {
                             ],
                           ),
                         );
-                      case TableStatus.ready:
-                        return RastreioWidget(data: value['dataObjects']);
+                       case TableStatus.ready:
+                        return Column(
+                          children: [
+                            RastreioWidget(data: value['dataObjects']),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  addTrackingCode(_codigoController.text);
+                                },
+                                child: Text("Salvar Código"),
+                                ),
+                            ),
+                          ],
+                        );
                       default:
                         return Text("Estado desconhecido.");
                     }

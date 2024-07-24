@@ -51,7 +51,7 @@ class LoginCard extends StatelessWidget {
     String password = _passwordController.text;
     bool loggedIn = await _auth.signInWithEmailAndPassword(email, password);
     if (loggedIn) {
-      Get.toNamed("/fasttrack");
+      Get.toNamed("/mytrack");
     } else {
       ScaffoldMessenger.of(Get.context!).showSnackBar(
         SnackBar(content: Text('Failed to sign in.')),

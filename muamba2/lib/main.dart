@@ -1,9 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'controllers/theme_controller.dart';
 import 'views/tela_um.dart';
 import 'views/fast_track.dart';
+import 'views/my_track.dart';
+import 'views/user_trackings.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -31,6 +34,9 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(name: '/', page: () => TelaUm()),
         GetPage(name: '/fasttrack', page: () => FastTrack()),
+        GetPage(name: '/newtrack', page: () => NewTrack()),
+        GetPage(name: '/mytrack', page: () => TrackingCodesScreen()),
+        GetPage(name: '/details', page: () => RastreioDetailsScreen(data: {})),
       ],
     );
   }
