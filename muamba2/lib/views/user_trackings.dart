@@ -11,7 +11,7 @@ class TrackingCodesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Trackings'),
+        title: Text('Minhas Encomendas'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: getTrackingCodes(),
@@ -33,7 +33,15 @@ class TrackingCodesScreen extends StatelessWidget {
                 var trackingCode =
                     data.docs[index].data() as Map<String, dynamic>;
                 return ListTile(
-                  title: Text(trackingCode['code']),
+                  title: Text(trackingCode['name']),
+                  subtitle: Text(trackingCode['code']),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      deleteTrackingCodeByCode(trackingCode['code']);
+
+                    },
+                  ),
                   onTap: () {
                     dataService.carregar(0, trackingCode['code']);
                     Get.to(RastreioDetailsScreen(
@@ -44,7 +52,7 @@ class TrackingCodesScreen extends StatelessWidget {
               },
             );
           } else {
-            return Center(child: Text('No tracking codes found'));
+            return Center(child: Text('Nenhuma encomenda foi salva ainda'));
           }
         },
       ),
