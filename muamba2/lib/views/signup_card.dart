@@ -23,14 +23,14 @@ class SignupCard extends StatelessWidget {
               ),
               SizedBox(height: 10),
               TextField(
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: InputDecoration(labelText: 'Senhaa'),
                 controller: _passwordController,
                 obscureText: true,
               ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _signUp,
-                child: Text('Sign Up'),
+                child: Text('Registrar'),
               ),
             ],
           ),

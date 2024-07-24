@@ -39,14 +39,12 @@ class TrackingCodesScreen extends StatelessWidget {
                     icon: Icon(Icons.delete),
                     onPressed: () {
                       deleteTrackingCodeByCode(trackingCode['code']);
-
                     },
                   ),
                   onTap: () {
                     dataService.carregar(0, trackingCode['code']);
                     Get.to(RastreioDetailsScreen(
-                        data: dataService
-                            .tableStateNotifier.value['dataObjects']));
+                        data: dataService.tableStateNotifier.value['dataObjects']));
                   },
                 );
               },

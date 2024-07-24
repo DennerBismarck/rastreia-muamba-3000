@@ -15,7 +15,7 @@ class TelaUm extends StatelessWidget {
             bottom: TabBar(
               tabs: [
                 Tab(text: 'Login'),
-                Tab(text: 'Signup'),
+                Tab(text: 'Registrar'),
               ],
             ),
           ),

@@ -23,7 +23,7 @@ class LoginCard extends StatelessWidget {
               ),
               SizedBox(height: 10),
               TextField(
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: InputDecoration(labelText: 'Senha'),
                 controller: _passwordController,
                 obscureText: true,
               ),
@@ -37,7 +37,7 @@ class LoginCard extends StatelessWidget {
                 onPressed: () {
                   Get.toNamed("/fasttrack");
                 },
-                child: Text('Fast Tracking'),
+                child: Text('Rastreio Rápido'),
               ),
             ],
           ),
