@@ -23,7 +23,7 @@ class SignupCard extends StatelessWidget {
               ),
               SizedBox(height: 10),
               TextField(
-                decoration: InputDecoration(labelText: 'Senhaa'),
+                decoration: InputDecoration(labelText: 'Senha'),
                 controller: _passwordController,
                 obscureText: true,
               ),
@@ -44,7 +44,9 @@ class SignupCard extends StatelessWidget {
     String password = _passwordController.text;
     bool signedUp = await _auth.createUserWithEmailAndPassword(email, password);
     if (signedUp) {
-      Get.toNamed("/fasttrack");
+      //Get.toNamed("/fasttrack");
+      await _auth.signInWithEmailAndPassword(email, password);
+      Get.toNamed("/mytrack");
     } else {
       ScaffoldMessenger.of(Get.context!).showSnackBar(
         SnackBar(content: Text('Failed to sign up.')),
