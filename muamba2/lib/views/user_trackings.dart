@@ -5,6 +5,7 @@ import '../controllers/user_track_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../controllers/data_service.dart';
 import '../widgets/rastreio_widget.dart';
+import 'package:muamba2/models/table_status.dart';
 
 class TrackingCodesScreen extends StatelessWidget {
   @override
@@ -33,7 +34,6 @@ class TrackingCodesScreen extends StatelessWidget {
                 if (value == null || value['status'] == null) {
                   return Text("Nenhum dado disponível.");
                 }
-
                 return ListView.builder(
                   itemCount: data.docs.length,
                   itemBuilder: (context, index) {
@@ -41,6 +41,14 @@ class TrackingCodesScreen extends StatelessWidget {
                         data.docs[index].data() as Map<String, dynamic>;
                     return ListTile(
                       title: Text(trackingCode['name']),
+                      subtitle: Text(trackingCode['code']),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete),
+                          onPressed: () {
+                         deleteTrackingCodeByCode(trackingCode['code']);
+                        },
+                      ),
+
                       onTap: () {
                         dataService.tableStateNotifier.value = {
                           'status': TableStatus.loading,
@@ -83,7 +91,7 @@ class TrackingCodesScreen extends StatelessWidget {
 class RastreioDetailsScreen extends StatelessWidget {
   final Map<String, dynamic> data;
 
-  RastreioDetailsScreen({required this.data});
+  RastreioDetailsScreen( {required this.data});
 
   @override
   Widget build(BuildContext context) {
