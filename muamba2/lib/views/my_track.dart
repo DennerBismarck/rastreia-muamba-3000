@@ -95,7 +95,6 @@ class NewTrack extends StatelessWidget {
                                 onPressed: () {
                                   addTrackingCode(_codigoController.text, _nomeEncomendaController.text);
                                   Get.toNamed("/mytrack");
-
                                 },
                                 child: Text("Salvar Código"),
                                 ),

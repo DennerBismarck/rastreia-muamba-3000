@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:muamba2/models/table_status.dart';
 import '../controllers/user_track_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../controllers/data_service.dart';
 import '../widgets/rastreio_widget.dart';
 
 class TrackingCodesScreen extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Minhas Encomendas'),
+        title: Text('My Trackings'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: getTrackingCodes(),
@@ -27,30 +27,46 @@ class TrackingCodesScreen extends StatelessWidget {
           final data = snapshot.data;
 
           if (data != null && data.docs.isNotEmpty) {
-            return ListView.builder(
-              itemCount: data.docs.length,
-              itemBuilder: (context, index) {
-                var trackingCode =
-                    data.docs[index].data() as Map<String, dynamic>;
-                return ListTile(
-                  title: Text(trackingCode['name']),
-                  subtitle: Text(trackingCode['code']),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () {
-                      deleteTrackingCodeByCode(trackingCode['code']);
-                    },
-                  ),
-                  onTap: () {
-                    dataService.carregar(0, trackingCode['code']);
-                    Get.to(RastreioDetailsScreen(
-                        data: dataService.tableStateNotifier.value['dataObjects']));
+            return ValueListenableBuilder(
+              valueListenable: dataService.tableStateNotifier,
+              builder: (_, value, __) {
+                if (value == null || value['status'] == null) {
+                  return Text("Nenhum dado disponível.");
+                }
+
+                return ListView.builder(
+                  itemCount: data.docs.length,
+                  itemBuilder: (context, index) {
+                    var trackingCode =
+                        data.docs[index].data() as Map<String, dynamic>;
+                    return ListTile(
+                      title: Text(trackingCode['name']),
+                      onTap: () {
+                        dataService.tableStateNotifier.value = {
+                          'status': TableStatus.loading,
+                          'dataObjects': []
+                        };
+                        dataService.tableStateNotifier.addListener(() {
+                          if (dataService.tableStateNotifier.value['status'] == TableStatus.ready) {
+                            final trackingDetails = dataService.tableStateNotifier.value['dataObjects'];
+                            Get.to(RastreioDetailsScreen(data: trackingDetails));
+                          } else if (dataService.tableStateNotifier.value['status'] == TableStatus.error) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Erro ao carregar dados'))
+                            );
+                          }
+                        });
+
+                        // Carrega os dados de rastreamento
+                        dataService.carregar(0, trackingCode['code']);
+                      },
+                    );
                   },
                 );
               },
             );
           } else {
-            return Center(child: Text('Nenhuma encomenda foi salva ainda'));
+            return Center(child: Text('No tracking codes found'));
           }
         },
       ),
