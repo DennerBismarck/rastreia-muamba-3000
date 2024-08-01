@@ -24,6 +24,8 @@ void main() async {
 class MyApp extends StatelessWidget {
   final ThemeController themeController = Get.put(ThemeController());
 
+  MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -32,11 +34,11 @@ class MyApp extends StatelessWidget {
       theme: themeController.themeData,
       initialRoute: '/',
       getPages: [
-        GetPage(name: '/', page: () => TelaUm()),
+        GetPage(name: '/', page: () => const TelaUm()),
         GetPage(name: '/fasttrack', page: () => FastTrack()),
         GetPage(name: '/newtrack', page: () => NewTrack()),
-        GetPage(name: '/mytrack', page: () => TrackingCodesScreen()),
-        GetPage(name: '/details', page: () => RastreioDetailsScreen(data: {})),
+        GetPage(name: '/mytrack', page: () => const TrackingCodesScreen()),
+        GetPage(name: '/details', page: () => const RastreioDetailsScreen(data: {})),
       ],
     );
   }

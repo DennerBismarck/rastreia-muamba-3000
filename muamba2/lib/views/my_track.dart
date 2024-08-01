@@ -10,10 +10,20 @@ import '../controllers/user_track_data.dart';
 class NewTrack extends StatelessWidget {
   final TextEditingController _codigoController = TextEditingController();
   final TextEditingController _nomeEncomendaController = TextEditingController();
+
+  NewTrack({super.key});
+
+  void _resetState() {
+    dataService.tableStateNotifier.value = {
+      'status': TableStatus.idle,
+      'dataObjects': []
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: NewAppBar(nometela: "Novo Rastreio"),
+      appBar: const NewAppBar(nometela: "Novo Rastreio"),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -22,23 +32,24 @@ class NewTrack extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: TextField(
                   controller: _nomeEncomendaController,
-                  decoration: InputDecoration(labelText: 'Nome do Pacote'),
+                  decoration: const InputDecoration(labelText: 'Nome do Pacote'),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: TextField(
                   controller: _codigoController,
-                  decoration: InputDecoration(labelText: 'Código de Rastreio'),
+                  decoration: const InputDecoration(labelText: 'Código de Rastreio'),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: ElevatedButton(
                   onPressed: () {
+                    _resetState();
                     dataService.carregar(0, _codigoController.text);
                   },
-                  child: Text("Procurar"),
+                  child: const Text("Procurar"),
                 ),
               ),
               SingleChildScrollView(
@@ -46,7 +57,7 @@ class NewTrack extends StatelessWidget {
                   valueListenable: dataService.tableStateNotifier,
                   builder: (_, value, __) {
                     if (value['status'] == null) {
-                      return Text("Nenhum dado disponível.");
+                      return const Text("Nenhum dado disponível.");
                     }
 
                     switch (value['status']) {
@@ -62,11 +73,11 @@ class NewTrack extends StatelessWidget {
                                 width: 300.0,
                               ),
                             ),
-                            Text("Coloque um código para rastreio..."),
+                            const Text("Coloque um código para rastreio..."),
                           ],
                         );
                       case TableStatus.loading:
-                        return Center(
+                        return const Center(
                           child: CircularProgressIndicator(),
                         );
                       case TableStatus.error:
@@ -74,18 +85,17 @@ class NewTrack extends StatelessWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text("Ocorreu um erro ao carregar os dados."),
+                              const Text("Ocorreu um erro ao carregar os dados."),
                               ElevatedButton(
                                 onPressed: () {
-                                  dataService.carregar(
-                                      0, _codigoController.text);
+                                  dataService.carregar(0, _codigoController.text);
                                 },
-                                child: Text("Tentar Novamente"),
+                                child: const Text("Tentar Novamente"),
                               ),
                             ],
                           ),
                         );
-                       case TableStatus.ready:
+                      case TableStatus.ready:
                         return Column(
                           children: [
                             RastreioWidget(data: value['dataObjects']),
@@ -94,15 +104,16 @@ class NewTrack extends StatelessWidget {
                               child: ElevatedButton(
                                 onPressed: () {
                                   addTrackingCode(_codigoController.text, _nomeEncomendaController.text);
+                                  _resetState(); 
                                   Get.toNamed("/mytrack");
                                 },
-                                child: Text("Salvar Código"),
-                                ),
+                                child: const Text("Salvar Código"),
+                              ),
                             ),
                           ],
                         );
                       default:
-                        return Text("Estado desconhecido.");
+                        return const Text("Estado desconhecido.");
                     }
                   },
                 ),

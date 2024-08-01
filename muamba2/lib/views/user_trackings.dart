@@ -5,20 +5,21 @@ import '../controllers/user_track_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../controllers/data_service.dart';
 import '../widgets/rastreio_widget.dart';
-import 'package:muamba2/models/table_status.dart';
 
 class TrackingCodesScreen extends StatelessWidget {
+  const TrackingCodesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Trackings'),
+        title: const Text('My Trackings'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: getTrackingCodes(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
@@ -31,8 +32,8 @@ class TrackingCodesScreen extends StatelessWidget {
             return ValueListenableBuilder(
               valueListenable: dataService.tableStateNotifier,
               builder: (_, value, __) {
-                if (value == null || value['status'] == null) {
-                  return Text("Nenhum dado disponível.");
+                if (value['status'] == null) {
+                  return const Text("Nenhum dado disponível.");
                 }
                 return ListView.builder(
                   itemCount: data.docs.length,
@@ -43,29 +44,45 @@ class TrackingCodesScreen extends StatelessWidget {
                       title: Text(trackingCode['name']),
                       subtitle: Text(trackingCode['code']),
                       trailing: IconButton(
-                        icon: Icon(Icons.delete),
-                          onPressed: () {
-                         deleteTrackingCodeByCode(trackingCode['code']);
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          deleteTrackingCodeByCode(trackingCode['code']);
                         },
                       ),
-
                       onTap: () {
+                        // Define o estado como carregando
                         dataService.tableStateNotifier.value = {
                           'status': TableStatus.loading,
                           'dataObjects': []
                         };
-                        dataService.tableStateNotifier.addListener(() {
+
+                        
+                        void stateListener() {
                           if (dataService.tableStateNotifier.value['status'] == TableStatus.ready) {
                             final trackingDetails = dataService.tableStateNotifier.value['dataObjects'];
-                            Get.to(RastreioDetailsScreen(data: trackingDetails));
+                            var result = Get.to(RastreioDetailsScreen(data: trackingDetails));
+                            result?.then((_) {
+                              
+                              dataService.tableStateNotifier.value = {
+                                'status': TableStatus.idle,
+                                'dataObjects': []
+                              };
+                            });
                           } else if (dataService.tableStateNotifier.value['status'] == TableStatus.error) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Erro ao carregar dados'))
+                              const SnackBar(content: Text('Erro ao carregar dados'))
                             );
+                            
+                            dataService.tableStateNotifier.value = {
+                              'status': TableStatus.idle,
+                              'dataObjects': []
+                            };
                           }
-                        });
+                        }
 
-                        // Carrega os dados de rastreamento
+                        dataService.tableStateNotifier.addListener(stateListener);
+
+                        
                         dataService.carregar(0, trackingCode['code']);
                       },
                     );
@@ -74,7 +91,7 @@ class TrackingCodesScreen extends StatelessWidget {
               },
             );
           } else {
-            return Center(child: Text('No tracking codes found'));
+            return const Center(child: Text('No tracking codes found'));
           }
         },
       ),
@@ -82,7 +99,7 @@ class TrackingCodesScreen extends StatelessWidget {
         onPressed: () {
           Get.toNamed('/newtrack');
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -91,13 +108,13 @@ class TrackingCodesScreen extends StatelessWidget {
 class RastreioDetailsScreen extends StatelessWidget {
   final Map<String, dynamic> data;
 
-  RastreioDetailsScreen( {required this.data});
+  const RastreioDetailsScreen({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalhes do Rastreio'),
+        title: const Text('Detalhes do Rastreio'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

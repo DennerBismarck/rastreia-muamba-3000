@@ -34,7 +34,7 @@ Stream<QuerySnapshot> getTrackingCodes() {
         .snapshots();
   }
 
-  return Stream.empty();
+  return const Stream.empty();
 }
 
 Future<void> deleteTrackingCodeByCode(String trackingCode) async {

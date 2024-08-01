@@ -7,30 +7,32 @@ class SignupCard extends StatelessWidget {
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuthService _auth = FirebaseAuthService();
 
+  SignupCard({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Card(
-        margin: EdgeInsets.all(20.0),
+        margin: const EdgeInsets.all(20.0),
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               TextField(
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: const InputDecoration(labelText: 'Email'),
                 controller: _emailController,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               TextField(
-                decoration: InputDecoration(labelText: 'Senha'),
+                decoration: const InputDecoration(labelText: 'Senha'),
                 controller: _passwordController,
                 obscureText: true,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _signUp,
-                child: Text('Registrar'),
+                child: const Text('Registrar'),
               ),
             ],
           ),
@@ -49,7 +51,7 @@ class SignupCard extends StatelessWidget {
       Get.toNamed("/mytrack");
     } else {
       ScaffoldMessenger.of(Get.context!).showSnackBar(
-        SnackBar(content: Text('Failed to sign up.')),
+        const SnackBar(content: Text('Failed to sign up.')),
       );
     }
   }

@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 class NewNavBar extends StatelessWidget {
   final List<Widget> tabs;
 
-  NewNavBar({required this.tabs});
+  const NewNavBar({super.key, required this.tabs});
 
   @override
   Widget build(BuildContext context) {
