@@ -38,7 +38,6 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/fasttrack', page: () => FastTrack()),
         GetPage(name: '/newtrack', page: () => NewTrack()),
         GetPage(name: '/mytrack', page: () => const TrackingCodesScreen()),
-        GetPage(name: '/details', page: () => const RastreioDetailsScreen(data: {})),
       ],
     );
   }

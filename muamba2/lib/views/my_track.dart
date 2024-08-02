@@ -52,71 +52,69 @@ class NewTrack extends StatelessWidget {
                   child: const Text("Procurar"),
                 ),
               ),
-              SingleChildScrollView(
-                child: ValueListenableBuilder(
-                  valueListenable: dataService.tableStateNotifier,
-                  builder: (_, value, __) {
-                    if (value['status'] == null) {
-                      return const Text("Nenhum dado disponível.");
-                    }
+              ValueListenableBuilder(
+                valueListenable: dataService.tableStateNotifier,
+                builder: (_, value, __) {
+                  if (value['status'] == null) {
+                    return const Text("Nenhum dado disponível.");
+                  }
 
-                    switch (value['status']) {
-                      case TableStatus.idle:
-                        return Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: FadeInImage.memoryNetwork(
-                                placeholder: kTransparentImage,
-                                image: 'https://i.imgur.com/zVkjVgc.png',
-                                height: 300.0,
-                                width: 300.0,
-                              ),
+                  switch (value['status']) {
+                    case TableStatus.idle:
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: FadeInImage.memoryNetwork(
+                              placeholder: kTransparentImage,
+                              image: 'https://i.imgur.com/zVkjVgc.png',
+                              height: 300.0,
+                              width: 300.0,
                             ),
-                            const Text("Coloque um código para rastreio..."),
-                          ],
-                        );
-                      case TableStatus.loading:
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      case TableStatus.error:
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text("Ocorreu um erro ao carregar os dados."),
-                              ElevatedButton(
-                                onPressed: () {
-                                  dataService.carregar(0, _codigoController.text);
-                                },
-                                child: const Text("Tentar Novamente"),
-                              ),
-                            ],
                           ),
-                        );
-                      case TableStatus.ready:
-                        return Column(
+                          const Text("Coloque um código para rastreio..."),
+                        ],
+                      );
+                    case TableStatus.loading:
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    case TableStatus.error:
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            RastreioWidget(data: value['dataObjects']),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  addTrackingCode(_codigoController.text, _nomeEncomendaController.text);
-                                  _resetState(); 
-                                  Get.toNamed("/mytrack");
-                                },
-                                child: const Text("Salvar Código"),
-                              ),
+                            const Text("Ocorreu um erro ao carregar os dados."),
+                            ElevatedButton(
+                              onPressed: () {
+                                dataService.carregar(0, _codigoController.text);
+                              },
+                              child: const Text("Tentar Novamente"),
                             ),
                           ],
-                        );
-                      default:
-                        return const Text("Estado desconhecido.");
-                    }
-                  },
-                ),
+                        ),
+                      );
+                    case TableStatus.ready:
+                      return Column(
+                        children: [
+                          RastreioWidget(data: value['dataObjects']),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                addTrackingCode(_codigoController.text, _nomeEncomendaController.text);
+                                _resetState(); 
+                                Get.toNamed("/mytrack");
+                              },
+                              child: const Text("Salvar Código"),
+                            ),
+                          ),
+                        ],
+                      );
+                    default:
+                      return const Text("Estado desconhecido.");
+                  }
+                },
               ),
             ],
           ),
