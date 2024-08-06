@@ -22,6 +22,11 @@ class NewTrack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    dataService.tableStateNotifier.value = {
+      'status': TableStatus.idle,
+      'dataObjects': []
+    };
+
     return Scaffold(
       appBar: const NewAppBar(nometela: "Novo Rastreio"),
       body: SingleChildScrollView(
